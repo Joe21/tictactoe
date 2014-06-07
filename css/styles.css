@@ -1,3 +1,13 @@
+/*
+Soft Black	#24221F
+Dark 				#363F45
+Med					#4B5F6D
+Light 			#5E7C88
+Yellowish		#FEB41C
+
+
+
+*/
 body {
 	background-color: black;
 	color: white;
@@ -5,7 +15,7 @@ body {
 }
 
 button {
-	background-color: #8585AD;
+	background-color: #5E7C88;
 }
 
 body h1 {
@@ -13,7 +23,7 @@ body h1 {
 }
 
 .box {
-	border: 1px solid skyblue;
+	border: 1px solid black;
 	display: block;
 	font-size: 40px;
 	float: left;
@@ -27,11 +37,11 @@ body h1 {
 }
 
 .free:hover {
-	background-color: yellow;
+	background-color: #FEB41C;
 }
 
 .taken {
-	background-color: grey;
+	background-color: #5E7C88;
 }
 
 #menu-container {
@@ -50,8 +60,9 @@ body h1 {
 }
 
 #scoreboard {
-	background-color: skyblue;
-	border: 1px solid white;
+	background-color: #363F45;
+	border: 1px solid #5E7C88;
+	color: #FEB41C;
 	float: left;
 	height: 100px;
 	margin-left: 20px;
@@ -60,7 +71,7 @@ body h1 {
 }
 
 #status-bar {
-	color: white;
+	color: #FEB41C;
 	font-size: 1.25em;
 	height: 20px;
 	line-height: 20px;
