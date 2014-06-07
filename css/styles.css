@@ -1,3 +1,78 @@
 body {
-	background-color: green;
+	background-color: black;
+	color: white;
+	font-family: arial;
+}
+
+button {
+	background-color: #8585AD;
+}
+
+body h1 {
+	text-align: center;
+}
+
+.box {
+	border: 1px solid skyblue;
+	display: block;
+	font-size: 40px;
+	float: left;
+	height: 40px;
+	text-align: center;
+	width: 40px;
+}
+
+.free {
+	background-color: white;
+}
+
+.free:hover {
+	background-color: yellow;
+}
+
+.taken {
+	background-color: grey;
+}
+
+#menu-container {
+}
+
+#main-container {
+	margin: auto;
+	width: 448px;
+	display: none;
+}
+
+#board-container {
+	float: left;
+	margin: auto;
+	width: 126px;
+}
+
+#scoreboard {
+	background-color: skyblue;
+	border: 1px solid white;
+	float: left;
+	height: 100px;
+	margin-left: 20px;
+	padding: 10px;
+	width: 280px;
+}
+
+#status-bar {
+	color: white;
+	font-size: 1.25em;
+	height: 20px;
+	line-height: 20px;
+	text-align: center;
+	width: 100%;
+}
+
+#reset-button {
+	margin-left: 20px;
+	margin-top: 5px;
+}
+
+#new-game-button {
+	margin-top: 5px;
 }
