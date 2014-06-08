@@ -19,10 +19,12 @@ var player2 = {
 
 // gameState attributes
 var gameState = {
+	board : [null, null, null, null, null, null, null, null, null],
 	gameOver : false,
+	move : null,
+	players : [player1, player2],
 	turn : null,
 	turnCounter : 0,
-	players : [player1, player2],
 	winner : null
 };
 
@@ -66,9 +68,36 @@ function pvpGameStart() {
 
 	// Link up gameState + player associations
 	gameState.turn = playerX;
+	gameState.turnCounter = 1;
 	status('<em>Current Move: </em>' + gameState.turn.name + ' is ' + gameState.turn.token);
 
+	if(gameState.gameOver === false) {
+		$('.box').on('click', function() {
+			gameState.move = this;
+			console.log('gameState.move is ' + gameState.move);
+		});
+	}
+
+	// NOTE TO SELF - TRY USING SIMILAR MOVE MECHANIC AS PREVIOUS GAME EXCEPT REFER TO GAMESTATE.MOVE
+
+
+	// choose move
+
+
+
 	// function to handle move
+	// function registerMove() {
+	// 	$('.box').on('click', function() {
+	// 		var box = this;
+	// 		if(box.hasClass('open')) {
+	// 			box.removeClass('open');
+	// 			box.addClass('closed');
+	// 			box.text(gameState.turn.token);
+	// 			var index = box.attr('id');
+	// 			gameState.board[index] = gameState.turn.token;
+	// 		}
+	// 	});
+	// }
 
 	// function to handle move switch
 
@@ -101,4 +130,11 @@ $(document).ready(function() {
 		refreshScoreboard();
 		pvpGameStart();
 	});
+
+	$('.box').on('click', function() {
+		var square = this;
+		console.log(square);
+	});
+
+
 });
