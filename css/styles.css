@@ -32,15 +32,15 @@ body h1 {
 	width: 40px;
 }
 
-.free {
+.open {
 	background-color: white;
 }
 
-.free:hover {
+.open:hover {
 	background-color: #FEB41C;
 }
 
-.taken {
+.closed {
 	background-color: #5E7C88;
 }
 
