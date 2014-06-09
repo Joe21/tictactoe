@@ -71,37 +71,43 @@ function pvpGameStart() {
 	gameState.turnCounter = 1;
 	status('<em>Current Move: </em>' + gameState.turn.name + ' is ' + gameState.turn.token);
 
+	// event handler w/ "ordered callback function design" within the scope of pvpGameStart();
 	if(gameState.gameOver === false) {
 		$('.box').on('click', function() {
-			gameState.move = this;
-			console.log('gameState.move is ' + gameState.move);
+			// gameState.move = this;
+			var converter = ('#' + this.id);
+			gameState.move = $(converter);
+			move(gameState.move);
 		});
 	}
 
 	// NOTE TO SELF - TRY USING SIMILAR MOVE MECHANIC AS PREVIOUS GAME EXCEPT REFER TO GAMESTATE.MOVE
 
+// Design Plan: Emphasize uniformity + separation of game mechanics
+// Call each function following the on click event handler
+// Avoid daisy chaining call back functions on each game mechanic function. 
+// 
+	function move(square) {
+		// Condition check for a closed square
+		if(square.hasClass('closed')) {
+			alert('Invalid choice!\nPlease choose a free box');
+			return false;
+		// Condition check for open square
+		} else if (square.hasClass('open')) {
+			// Switch the square's classes
+			square.removeClass('open');
+			square.addClass('closed');
+			// Add the player's token to the square
+			square.text(gameState.turn.token);
+			// Capture and use the square's id to capture the value onto the appropriate game board 
+			var index = square.attr('id');
+			gameState.board[index] = gameState.turn.token;
+		}
+	}
 
-	// choose move
+	// function to handle game checks
 
-
-
-	// function to handle move
-	// function registerMove() {
-	// 	$('.box').on('click', function() {
-	// 		var box = this;
-	// 		if(box.hasClass('open')) {
-	// 			box.removeClass('open');
-	// 			box.addClass('closed');
-	// 			box.text(gameState.turn.token);
-	// 			var index = box.attr('id');
-	// 			gameState.board[index] = gameState.turn.token;
-	// 		}
-	// 	});
-	// }
-
-	// function to handle move switch
-
-	// function to check for win, draw, etc.
+	// function to handle turn switch
 
 	// function to handle gameover
 
@@ -130,11 +136,4 @@ $(document).ready(function() {
 		refreshScoreboard();
 		pvpGameStart();
 	});
-
-	$('.box').on('click', function() {
-		var square = this;
-		console.log(square);
-	});
-
-
 });

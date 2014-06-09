@@ -1,13 +1,11 @@
-/*
+/* Color Scheme
 Soft Black	#24221F
 Dark 				#363F45
 Med					#4B5F6D
 Light 			#5E7C88
 Yellowish		#FEB41C
-
-
-
 */
+
 body {
 	background-color: black;
 	color: white;
@@ -28,6 +26,7 @@ body h1 {
 	font-size: 40px;
 	float: left;
 	height: 40px;
+	line-height: 40px;
 	text-align: center;
 	width: 40px;
 }
