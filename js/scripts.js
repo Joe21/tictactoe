@@ -25,7 +25,6 @@ var gameState = {
 	players : [player1, player2],
 	turn : null,
 	turnCounter : 0,
-	winner : null
 };
 
 // =================================
@@ -53,9 +52,32 @@ function resetScore(){
 	status('Scoreboard reset');
 }
 
+// Starts a new PVP game
+function newPVPGame() {
+	gameState = {
+		board : [null, null, null, null, null, null, null, null, null],
+		gameOver : false,
+		move : null,
+		players : [player1, player2],
+		turn : null,
+		turnCounter : 0,
+	};
+	$('.box').removeClass('closed');
+	$('.box').addClass('open');
+	$('.box').empty();
+	pvpGameStart();
+}
+
 // =================================
 // PVP Game
 // =================================
+// Design Plan: Emphasize uniformity & separation of game mechanics via...
+//	CENTRAL HUB SECTION:
+//		- Will manage game flow and call each specific game function
+//		- Avoid nested conditions in CENTRAL HUB for brevity and readability.
+//		- Avoid daisy chaining call back functions in each specific game mechanic function. 
+
+// Initialize pvp game
 function pvpGameStart() {
 
 	// Randomize X & O assignment
@@ -66,35 +88,64 @@ function pvpGameStart() {
 	playerX.token = 'X';
 	playerO.token = 'O';
 
+	// Assign addToWinner attribute
+	playerX.addToWinner = 0;
+	playerO.addToWinner = 0;
+
 	// Link up gameState + player associations
 	gameState.turn = playerX;
 	gameState.turnCounter = 1;
 	status('<em>Current Move: </em>' + gameState.turn.name + ' is ' + gameState.turn.token);
 
-	// event handler w/ "ordered callback function design" within the scope of pvpGameStart();
-	if(gameState.gameOver === false) {
-		$('.box').on('click', function() {
-			// gameState.move = this;
-			var converter = ('#' + this.id);
-			gameState.move = $(converter);
-			move(gameState.move);
-		});
-	}
+	// ===============================================================================================
+	// CENTRAL HUB SECTION - This section will house all gameplay condition checks except...
+	//		[Ref1] For brevity, the gameState.gameOver check for move() occurs within move()
+	//		[Ref2] For brevity, the gameState.gameOver check for switchTurn() occurs within switchturn()
+	// ===============================================================================================
+	$('.box').on('click', function() {
+		var converter = ('#' + this.id);
+		gameState.move = $(converter);
+		// [Ref1]
+		move(gameState.move);
 
-	// NOTE TO SELF - TRY USING SIMILAR MOVE MECHANIC AS PREVIOUS GAME EXCEPT REFER TO GAMESTATE.MOVE
+		// Upon move completion, check for win. Check for gameover to prevent players from adding wins after the game is over.
+		if (checkWin(gameState.turn.token) && gameState.gameOver === false) {
+			gameState.gameOver = true;
+			status(gameState.turn.name + ' wins!');
+			// Update win to the global player object
+			gameState.turn.addToWinner ++;
+			player1.wins = player1.wins + player1.addToWinner;
+			player2.wins = player2.wins + player2.addToWinner;
+			refreshScoreboard();
+			$('#new-pvp-game-button').show();
+			return false;
+		// If no winner; check for draw.
+		} else if (checkDraw()) {
+			gameState.gameOver = true;
+			status('Draw!');
+			$('#new-pvp-game-button').show();
+			return false;
+		// If no draw, switch turn
+		} else {
+			// [Ref2]
+			switchTurn();
+		}
+	});
+	// End of CENTRAL HUB SECTION
 
-// Design Plan: Emphasize uniformity + separation of game mechanics
-// Call each function following the on click event handler
-// Avoid daisy chaining call back functions on each game mechanic function. 
-// 
+	// =========================
+	// Individual Game Functions
+	// =========================
+
+	// For sake of brevity, the move function will house the gameState.gameOver checks rather the CENTRAL HUB SECTION.
 	function move(square) {
 		// Condition check for a closed square
-		if(square.hasClass('closed')) {
-			alert('Invalid choice!\nPlease choose a free box');
+		if(square.hasClass('closed') && gameState.gameOver === false) {
+			alert('Invalid choice!\nPlease choose an open box');
 			return false;
 		// Condition check for open square
-		} else if (square.hasClass('open')) {
-			// Switch the square's classes
+		} else if (square.hasClass('open') && gameState.gameOver === false) {
+			// Switch the square's class
 			square.removeClass('open');
 			square.addClass('closed');
 			// Add the player's token to the square
@@ -105,12 +156,52 @@ function pvpGameStart() {
 		}
 	}
 
-	// function to handle game checks
+	// function to check for win
+	function checkWin(token) {
+		if(gameState.board[0] == token && gameState.board[1] == token && gameState.board[2] == token) {
+			return true;
+		} else if (gameState.board[3] == token && gameState.board[4] == token && gameState.board[5] == token) {
+			return true;
+		} else if (gameState.board[6] == token && gameState.board[7] == token && gameState.board[8] == token) {
+			return true;
+		} else if (gameState.board[0] == token && gameState.board[3] == token && gameState.board[6] == token) {
+			return true;
+		} else if (gameState.board[1] == token && gameState.board[4] == token && gameState.board[7] == token) {
+			return true;
+		} else if (gameState.board[2] == token && gameState.board[5] == token && gameState.board[8] == token) {
+			return true;
+		} else if (gameState.board[0] == token && gameState.board[4] == token && gameState.board[8] == token) {
+			return true;
+		} else if (gameState.board[2] == token && gameState.board[4] == token && gameState.board[6] == token) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
-	// function to handle turn switch
+	// function to check for draw
+	function checkDraw(){
+		if (gameState.gameOver === false && gameState.turnCounter == 10) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
-	// function to handle gameover
-
+	// function to switchturn
+	function switchTurn() {
+		if (gameState.turn == playerX && gameState.gameOver === false) {
+			gameState.turn = playerO;
+			gameState.turnCounter ++;
+			status('<em>Current Move: </em>' + gameState.turn.name + ' is ' + gameState.turn.token);
+			return false;
+		} else if (gameState.turn == playerO && gameState.gameOver === false) {
+			gameState.turn = playerX;
+			gameState.turnCounter ++;
+			status('<em>Current Move: </em>' + gameState.turn.name + ' is ' + gameState.turn.token);
+			return false;
+		}
+	}
 }
 
 // =================================
@@ -135,5 +226,13 @@ $(document).ready(function() {
 		gameContainer.show();
 		refreshScoreboard();
 		pvpGameStart();
+	});
+
+	$('#new-pvp-game-button').on('click', function () {
+		newPVPGame();
+	});
+
+	$('#new-pvp-game-button').on('click', function () {
+		// newPVEGame();
 	});
 });
