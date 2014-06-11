@@ -105,8 +105,7 @@ function pvpGameStart() {
 	$('.box').on('click', function() {
 		var converter = ('#' + this.id);
 		gameState.move = $(converter);
-		// [Ref1]
-		move(gameState.move);
+		move(gameState.move);		// <-- [Ref1]
 
 		// Upon move completion, check for win. Check for gameover to prevent players from adding wins after the game is over.
 		if (checkWin(gameState.turn.token) && gameState.gameOver === false) {
@@ -119,7 +118,7 @@ function pvpGameStart() {
 			refreshScoreboard();
 			$('#new-pvp-game-button').show();
 			return false;
-		// If no winner; check for draw.
+		// If no winner; check for draw
 		} else if (checkDraw()) {
 			gameState.gameOver = true;
 			status('Draw!');
@@ -127,11 +126,12 @@ function pvpGameStart() {
 			return false;
 		// If no draw, switch turn
 		} else {
-			// [Ref2]
-			switchTurn();
+			switchTurn();		// <-- [Ref2]
 		}
 	});
 	// End of CENTRAL HUB SECTION
+
+
 
 	// =========================
 	// Individual Game Functions
@@ -142,6 +142,15 @@ function pvpGameStart() {
 		// Condition check for a closed square
 		if(square.hasClass('closed') && gameState.gameOver === false) {
 			alert('Invalid choice!\nPlease choose an open box');
+			// BUGFIX: During this condition, the switchTurn() still gets called. To avoid calling switchTurn as a callback function of move()...
+			// Manually change the turn and decrement gameState.turnCounter, thus the CENTRAL HUB switchTurn() will even out.
+			if (gameState.turn == playerX) {
+				gameState.turn = playerO;
+				gameState.turnCounter --;
+			} else {
+				gameState.turn = playerX;
+				gameState.turnCounter --;
+			}
 			return false;
 		// Condition check for open square
 		} else if (square.hasClass('open') && gameState.gameOver === false) {
@@ -180,8 +189,9 @@ function pvpGameStart() {
 	}
 
 	// function to check for draw
+	// [note] The turnCounter checks for 9; the condition occurs after the players move registers but before the switchturn can be invoked);
 	function checkDraw(){
-		if (gameState.gameOver === false && gameState.turnCounter == 10) {
+		if (gameState.gameOver === false && gameState.turnCounter == 9) {
 			return true;
 		} else {
 			return false;
